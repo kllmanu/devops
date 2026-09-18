@@ -10,4 +10,4 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Print Hello World
-        run: echo "Hello, World!"
+        run: docker run hello-world
