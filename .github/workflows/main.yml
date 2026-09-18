@@ -1,0 +1,13 @@
+name: Self-Hosted Hello World
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  say-hello:
+    runs-on: self-hosted
+    steps:
+      - name: Print Hello World
+        run: echo "Hello, World!"
