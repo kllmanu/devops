@@ -12,14 +12,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Build Docker image
-        run: docker build -t demo .
+      - name: Build with Docker Compose
+        run: docker compose build
 
-      - name: Run Docker container
-        run: |
-          docker stop demo || true
-          docker rm demo || true
-          docker run -d --name demo -p 8080:8080 demo
+      - name: Start container with Docker Compose
+        run: docker compose up -d
 
       - name: Clean old Docker images
         if: always()
