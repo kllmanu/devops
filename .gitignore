@@ -35,3 +35,7 @@ out/
 
 ### VS Code ###
 .vscode/
+
+buildOutputCleanup/
+[0-9]*.[0-9]*.[0-9]*/
+vcs-[0-9]*/
