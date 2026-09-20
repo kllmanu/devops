@@ -1,4 +1,4 @@
-name: Self-Hosted Hello World
+name: Build, test and deploy
 
 on:
   push:
@@ -6,8 +6,21 @@ on:
       - main
 
 jobs:
-  say-hello:
+  build:
     runs-on: self-hosted
     steps:
-      - name: Print Hello World
-        run: docker run hello-world
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t demo .
+
+      - name: Run Docker container
+        run: |
+          docker stop demo || true
+          docker rm demo || true
+          docker run -d --name demo -p 8080:8080 demo
+
+      - name: Clean old Docker images
+        if: always()
+        run: docker image prune -f
