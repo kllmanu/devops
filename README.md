@@ -49,6 +49,9 @@ This lecture was all about getting to know plain `docker` commands, no `docker c
 - [x] remove old container
 - [x] start new container
 
+<img width="2560" height="1440" alt="image" src="https://github.com/user-attachments/assets/b4bf1519-d959-42f9-95bb-9872db87cb64" />
+
+
 **Problem #1:** The docker engine is running as root, which means every file it creates will be of user and group `root`. To workaround this, we map the user and group from the host to the container with 
 
 ```
