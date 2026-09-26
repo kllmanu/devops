@@ -34,4 +34,7 @@ User bob
 
 First of all, we installed a [self-hosted runner](https://docs.github.com/en/actions/concepts/runners/self-hosted-runners) on our server. This is required, because the server at the FHV can't be reached from the outside due to security concerns. The self-hosted runner then polls the repository and runs the pipelines on every commit (on the main branch as of now). 
 
-Next, everyone (!!) created a build pipeline to play and get a feeling. Our first pipeline was just a "Hello, world".
+Next, everyone (!!) created a build pipeline to play and get a feeling. Our first pipeline was just a "Hello, world". Nothing fancy. It is important to run all the build tools inside docker, we don't want to install anything outside. The pipeline can just be created on GitHub, it is the easier way, because it has builtin documentation, syntax highlighting, auto completion and even a marketplace for common workflows.
+
+<img width="1920" height="923" alt="image" src="https://github.com/user-attachments/assets/ec08cdff-078b-45f7-8c17-b197ad602ef2" />
+
