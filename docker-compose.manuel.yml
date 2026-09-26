@@ -1,7 +1,8 @@
 services:
   demo:
-    build: .
-    dockerfile: Dockerfile.manuel
+    build:
+      context: .
+      dockerfile: Dockerfile.manuel
     image: demo-manuel:latest
     container_name: demo-manuel
     ports:
