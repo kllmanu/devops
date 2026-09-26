@@ -49,6 +49,8 @@ This lecture was all about getting to know plain `docker` commands, no `docker c
 - [x] remove old container
 - [x] start new container
 
+We built the application with the [official gradle image ](https://hub.docker.com/_/gradle) and run it with the [eclipse temurin](https://hub.docker.com/_/eclipse-temurin) image.
+
 <img width="2560" height="1440" alt="image" src="https://github.com/user-attachments/assets/b4bf1519-d959-42f9-95bb-9872db87cb64" />
 
 
