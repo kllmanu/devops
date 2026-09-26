@@ -38,3 +38,12 @@ Next, everyone (!!) created a build pipeline to play and get a feeling. Our firs
 
 <img width="1920" height="923" alt="image" src="https://github.com/user-attachments/assets/ec08cdff-078b-45f7-8c17-b197ad602ef2" />
 
+### Lecture 3 ­— Building and Testing
+
+This lecture was all about getting to know plain `docker` commands, no `docker compose` so far. We want to get there, step by step. Additionally, we have also installed [ctop](https://github.com/bcicen/ctop), which provides a concise and condensed overview of real-time metrics for multiple containers.
+
+- [x] checkout repository
+- [x] build with gradle image
+- [x] run unit tests (part of the build step)
+- [ ] create a docker image
+
