@@ -17,8 +17,22 @@ jobs:
       # Mount the checked-out repository into the Gradle container, use it as
       # the working directory, and run the build (including the unit tests).
       - name: Build with Gradle
-        run: docker run -u "$(id -u):$(id -g)" -v "$PWD:/app" -w /app gradle:8.14-jdk21 gradle build
+        run: docker run --rm -u "$(id -u):$(id -g)" -v "$PWD:/app" -w /app gradle:jdk21 gradle build
 
-      - name: check path
+      - name: Check path
         run: |
           ls -alh build/libs
+
+      - name: Build docker image
+        run: docker build -f Dockerfile.nathan -t demo-nathan .
+
+      - name: Stop old docker container
+        run: docker stop demo-nathan
+        continue-on-error: true
+
+      - name: Remove old container
+        run: docker rm demo-nathan
+        continue-on-error: true
+
+      - name: Run docker container
+        run: docker run --name demo-nathan -p 8081:8080 --restart unless-stopped demo-nathan:latest
