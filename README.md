@@ -6,6 +6,12 @@
 
 This is our repository for the [DevOps course at FHV](https://www.fhv.at/en/course/cc/079273000113/024717050608), University of Applied Sciences Vorarlberg. DevOps is the integration and automation of **software development and operations**. The aim of the course is to convey the interlinking between both.
 
+We are using multiple pipelines, so everyone is able to play around with, thus we have multiple applications on the server running:
+
+- http://10.0.40.170:8081 (Manuel's pipeline)
+- http://10.0.40.170:8082 (Nathan's pipeline)
+- http://10.0.40.170:8083 (Ruben's pipeline)
+
 ## Documentation
 
 Here we keep our notes from the lectures, the things we got to know and the things we messed up. :)
@@ -17,14 +23,7 @@ Our first lecture was all about the initial setup and getting familiar with bash
 #### Setup SSH 
 
 - Generate an SSH key with: `ssh-keygen -t rsa -b 4096` and
-- create a `~/.ssh/config` file for convenience:
-
-```
-Host devops
-HostName 127.0.0.1
-User bob
-```
-
+- create an `~/.ssh/config` file for [aliases](https://askubuntu.com/questions/942279/create-alias-for-ssh-connecting)
 - use `ssh devops` to login to our server and
 - `exit` to disconnect
 
@@ -32,7 +31,7 @@ User bob
 
 First of all, we installed a [self-hosted runner](https://docs.github.com/en/actions/concepts/runners/self-hosted-runners) on our server. This is required, because the server at the FHV can't be reached from the outside due to security concerns. The self-hosted runner then polls the repository for changes and runs the pipelines on every commit (on the main branch as of now). 
 
-Next, everyone (!!) created a build pipeline to play and get a feeling. Our first pipeline was just a "Hello, world". Nothing fancy. It is important to run all the build tools inside docker, we don't want to install anything on the server. The pipeline can just be created on GitHub. It is the easier way, because it has builtin documentation, syntax highlighting, auto completion and even a marketplace for common workflows. However, it is also possible to create our own workflows in a yaml file in the `.github/workflows` on our local machine.
+Next, everyone (!!) created a build pipeline to play and get a feeling. Our first pipeline was just a "Hello, world". Nothing fancy. It is important to run all the build tools inside docker, we don't want to install anything on the server. The pipeline can just be created on GitHub. It is the easier way, because it has builtin documentation, syntax highlighting, auto completion and even a marketplace for common workflows. However, it is also possible to create our own workflows in a yaml file in the `.github/workflows/` on our local machine.
 
 <img width="1920" height="923" alt="image" src="https://github.com/user-attachments/assets/ec08cdff-078b-45f7-8c17-b197ad602ef2" />
 
