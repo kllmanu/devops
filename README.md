@@ -10,7 +10,7 @@ This is our repository for the [DevOps course at FHV](https://www.fhv.at/en/cour
 
 Here we keep our notes from the lectures, the things we got to know and the things we messed up. :)
 
-### Lecture 1
+### Lecture 1 — Setup
 
 Our first lecture was all about the initial setup and getting familiar with bash, git and the command line in general. We generated SSH key pairs for each member and sent the public keys to our teacher. In order to make things simple, we installed [fzf](https://github.com/junegunn/fzf) and got to know about [how to get started with tmux](https://github.com/tmux/tmux/wiki/Getting-Started) once we got our server. 
 
@@ -30,3 +30,8 @@ User bob
 - use `ssh devops` to login to our server and
 - `exit` to disconnect
 
+### Lecture 2 — Actions and Runners
+
+First of all, we installed a [self-hosted runner](https://docs.github.com/en/actions/concepts/runners/self-hosted-runners) on our server. This is required, because the server at the FHV can't be reached from the outside due to security concerns. The self-hosted runner then polls the repository and runs the pipelines on every commit (on the main branch as of now). 
+
+Next, everyone (!!) created a build pipeline to play and get a feeling. Our first pipeline was just a "Hello, world".
