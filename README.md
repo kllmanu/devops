@@ -18,7 +18,7 @@ Here we keep our notes from the lectures, the things we got to know and the thin
 
 ### Lecture 1 — Setup
 
-Our first lecture was all about the initial setup and getting familiar with bash, git and the command line in general. We generated SSH key pairs for each member and sent the public keys to our teacher. The project is just a [Spring Boot Application](https://start.spring.io/) with [gradle](https://gradle.org/) as build system. We also created a simple controller and added some unit tests.
+Our first lecture was all about the initial setup and getting familiar with bash, git and the command line in general. We generated SSH key pairs for each member and sent the public keys to our teacher. The project is just a [Spring Boot Application](https://start.spring.io/) with [gradle](https://gradle.org/) as build system using Java 21. We also created a simple `@Controller` and added some unit tests.
 
 #### Setup SSH 
 
