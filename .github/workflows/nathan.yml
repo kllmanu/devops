@@ -35,7 +35,7 @@ jobs:
         continue-on-error: true
 
       - name: Run docker container
-        run: docker run -d --name demo-nathan -p 8081:8080 --restart unless-stopped demo-nathan:latest
+        run: docker run -d --name demo-nathan -p 8082:8080 --restart unless-stopped demo-nathan:latest
 
       - name: Clean up unused Docker images
         if: always()
