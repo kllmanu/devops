@@ -1,4 +1,4 @@
-name: Build
+name: Nathan's pipeline
 
 # Run the build for every pushed branch.
 on:
