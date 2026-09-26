@@ -44,7 +44,10 @@ This lecture was all about getting to know plain `docker` commands, no `docker c
 - [x] checkout repository
 - [x] build with gradle image
 - [x] run unit tests (part of the build step)
-- [ ] create a docker image
+- [x] create a docker image
+- [x] stop old container
+- [x] remove old container
+- [x] start container
 
 **Problem #1:** The docker engine is running as root, which means every file it creates will be of user and group `root`. To workaround this, we map the user and group from the host to the container with the `docker run -u "$(id -u):$(id -g)"`.
 
