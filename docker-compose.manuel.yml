@@ -1,8 +1,9 @@
 services:
   demo:
     build: .
-    image: demo:latest
-    container_name: demo
+    dockerfile: Dockerfile.manuel
+    image: demo-manuel:latest
+    container_name: demo-manuel
     ports:
       - "8081:8080"
     restart: unless-stopped
