@@ -44,11 +44,15 @@ This lecture was all about getting to know plain `docker` commands, no `docker c
 - [x] checkout repository
 - [x] build with gradle image
 - [x] run unit tests (part of the build step)
-- [x] create a docker image
+- [x] build a docker image
 - [x] stop old container
 - [x] remove old container
-- [x] start container
+- [x] start new container
 
-**Problem #1:** The docker engine is running as root, which means every file it creates will be of user and group `root`. To workaround this, we map the user and group from the host to the container with the `docker run -u "$(id -u):$(id -g)"`.
+**Problem #1:** The docker engine is running as root, which means every file it creates will be of user and group `root`. To workaround this, we map the user and group from the host to the container with 
+
+```
+docker run -u "$(id -u):$(id -g)"
+```
 
 **Problem #2:** Once a pipeline is finished, it deletes (post job cleanup) the `build/` folder created by gradle. We **usually try to verify every step** to get a better understanding of the things we do in our pipeline. The `build/` folder is created succesfully, but it is just cleaned afterwards. This is usually not a problem, because we create the docker image with the jar file right after. But it was definitely a lesson we learned the hard way!
