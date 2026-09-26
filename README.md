@@ -56,5 +56,5 @@ We built the application with the [official gradle image ](https://hub.docker.co
 
 ### Challenges we encountered
 
-- The docker engine is running as root, which means every file it creates will be of user and group `root`. To workaround this, we map the user and group from the host to the container with `docker run -u "$(id -u):$(id -g)"`.
+- The docker engine is running as root, which means every file it creates will be of user and group `root`. To workaround this, we use `docker run -u "$(id -u):$(id -g)"` to map the user and group from the host to the container with.
 - Once a pipeline is finished, it deletes (post job cleanup) the `build/` folder created by gradle. We **usually try to verify every step** to get a better understanding of the things we do in our pipeline. The `build/` folder is created succesfully, but it is just cleaned afterwards. This is usually not a problem, because we create the docker image with the jar file right after. But it was definitely a lesson we learned the hard way!
