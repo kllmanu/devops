@@ -1,10 +1,10 @@
 # DevOps 26
 
-## Description
-
 [![Manuel's pipeline](https://github.com/kllmanu/devops/actions/workflows/manuel.yml/badge.svg)](https://github.com/kllmanu/devops/actions/workflows/manuel.yml)
 [![Nathan's pipeline](https://github.com/kllmanu/devops/actions/workflows/nathan.yml/badge.svg)](https://github.com/kllmanu/devops/actions/workflows/nathan.yml)
 [![Ruben's pipeline](https://github.com/kllmanu/devops/actions/workflows/ruben.yml/badge.svg)](https://github.com/kllmanu/devops/actions/workflows/ruben.yml)
+
+## Description
 
 Please note: We're currently working on Nathan's pipeline together, so his pipeline includes all the lectures as of now. The other ones are just used as our playground.
 
