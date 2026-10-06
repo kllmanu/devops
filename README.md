@@ -4,7 +4,7 @@
 [![Nathan's pipeline](https://github.com/kllmanu/devops/actions/workflows/nathan.yml/badge.svg)](https://github.com/kllmanu/devops/actions/workflows/nathan.yml)
 [![Ruben's pipeline](https://github.com/kllmanu/devops/actions/workflows/ruben.yml/badge.svg)](https://github.com/kllmanu/devops/actions/workflows/ruben.yml)
 
-Please note: We're currently working on Nathan's pipeline together, so his pipeline includes all the lectures as of now.
+Please note: We're currently working on Nathan's pipeline together, so his pipeline includes all the lectures as of now. The other ones are just used as our playground.
 
 This is our repository for the [DevOps course at FHV](https://www.fhv.at/en/course/cc/079273000113/024717050608), University of Applied Sciences Vorarlberg. DevOps is the integration and automation of **software development and operations**. The aim of the course is to convey the interlinking between both.
 
