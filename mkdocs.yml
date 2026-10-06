@@ -1,0 +1,5 @@
+site_name: "DevOps 26"
+theme:
+  name: material
+docs_dir: docs
+site_dir: site

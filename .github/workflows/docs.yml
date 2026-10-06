@@ -19,9 +19,32 @@ jobs:
         run: |
           docker run --rm --volume "${{ github.workspace }}:/data" --user $(id -u):$(id -g) \
             pandoc/extra metadata.yml README.md --lua-filter=remove-badges.lua \
+            -M subtitle="Documentation ${{ github.ref_name }}" \
+            -M header-right="${{ github.ref_name }}" \
             --template eisvogel -o doc-${{ github.ref_name }}.pdf
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           files: doc-${{ github.ref_name }}.pdf
+
+  mkdocs:
+    runs-on: self-hosted
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Prepare step
+        run: mkdir docs/ && cp README.md docs/index.md
+
+      - name: Run MkDocs Build via Docker
+        run: |
+          docker run --rm --volume "${{ github.workspace }}:/docs" --user $(id -u):$(id -g) \
+            squidfunk/mkdocs-material build
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site/
