@@ -61,3 +61,7 @@ We built the application with the [official gradle image ](https://hub.docker.co
 - Once a pipeline is finished, it deletes (post job cleanup) the `build/` folder created by gradle. We **usually try to verify every step** to get a better understanding of the things we do in our pipeline. The `build/` folder is created succesfully, but it is just cleaned afterwards. This is usually not a problem, because we create the docker image with the jar file right after. But it was definitely a lesson we learned the hard way!
 
 ### Lecture 4
+
+- To wait for the container to be ready, we simply `sleep` 30 seconds.
+- The integration test just `curl`'s the response and `grep`'s for "running".
+- We name our images with `latest` for the most recent one but also tag them with the commit SHA.
