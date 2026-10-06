@@ -1,5 +1,36 @@
 site_name: "DevOps 26"
+repo_url: https://github.com/kllmanu/devops
+nav:
+  - Lecture notes: index.md
 theme:
+  language: en
   name: material
+  palette:
+    # Palette toggle for automatic mode (defaults to dark theme)
+    - media: "(prefers-color-scheme)"
+      scheme: slate
+      primary: teal
+      accent: teal
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: teal
+      accent: teal
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: teal
+      accent: teal
+      toggle:
+        icon: material/brightness-7
+        name: Switch to system preference
 docs_dir: docs
 site_dir: site
