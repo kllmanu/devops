@@ -60,8 +60,12 @@ We built the application with the [official gradle image ](https://hub.docker.co
 - The docker engine is running as root, which means every file it creates will be of user and group `root`. To workaround this, we use `docker run -u "$(id -u):$(id -g)"` to map the user and group from the host to the container with.
 - Once a pipeline is finished, it deletes (post job cleanup) the `build/` folder created by gradle. We **usually try to verify every step** to get a better understanding of the things we do in our pipeline. The `build/` folder is created succesfully, but it is just cleaned afterwards. This is usually not a problem, because we create the docker image with the jar file right after. But it was definitely a lesson we learned the hard way!
 
-### Lecture 4
+### Lecture 4 — Testing, Tagging, Pushing
 
 - To wait for the container to be ready, we simply `sleep` 30 seconds.
 - The integration test just `curl`'s the response and `grep`'s for "running".
 - We name our images with `latest` for the most recent one but also tag them with the commit SHA.
+
+<img width="2560" height="1440" alt="Screenshot From 2026-10-06 23-22-02" src="https://github.com/user-attachments/assets/0bd8a63e-60b7-42a7-84e2-b88e6b324d51" />
+
+In order to verify our repository and pushed images we have installed [crane](https://github.com/google/go-containerregistry/blob/main/cmd/crane/doc/crane.md).
