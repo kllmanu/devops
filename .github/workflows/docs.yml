@@ -17,11 +17,9 @@ jobs:
 
       - name: Run pandoc
         run: |
-          docker run --rm --volume "${{ github.workspace }}:/data" \
-            --user $(id -u):$(id -g) \
-            pandoc/extra metadata.yml README.md \
-            --lua-filter=remove-badges.lua \
-            --template eisvogel -o \ doc-${{ github.ref_name }}.pdf
+          docker run --rm --volume "${{ github.workspace }}:/data" --user $(id -u):$(id -g) \
+            pandoc/extra metadata.yml README.md --lua-filter=remove-badges.lua \
+            --template eisvogel -o doc-${{ github.ref_name }}.pdf
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
