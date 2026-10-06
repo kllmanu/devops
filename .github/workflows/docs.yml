@@ -26,4 +26,4 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: document-${{ github.ref_name }}.pdf
+          files: doc-${{ github.ref_name }}.pdf
