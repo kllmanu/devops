@@ -37,6 +37,12 @@ jobs:
       - name: Run docker container
         run: docker run -d --name demo-nathan -p 8082:8080 --restart unless-stopped demo-nathan:latest
 
+      - name: Wait for container to be ready
+        run: sleep 30
+
+      - name: Run integration test
+        run: curl -s http://localhost:8082 | grep "running"
+
       - name: Clean up unused Docker images
         if: always()
         run: docker image prune -f
