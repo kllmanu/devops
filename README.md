@@ -35,7 +35,7 @@ First of all, we installed a [self-hosted runner](https://docs.github.com/en/act
 
 Next, everyone (!!) created a build pipeline to play and get a feeling. Our first pipeline was just a "Hello, world". Nothing fancy. It is important to run all the build tools inside docker, we don't want to install anything on the server. The pipeline can just be created on GitHub. It is the easier way, because it has builtin documentation, syntax highlighting, auto completion and even a marketplace for common workflows. However, it is also possible to create our own workflows in a yaml file in the `.github/workflows/` on our local machine.
 
-![](/screenshots/screenshot1.png)
+![](./screenshots/screenshot1.png)
 
 The [GitHub Actions](https://github.com/kllmanu/devops/actions) shows all the pipelines. It allows us to investigate issues if we need to.
 
