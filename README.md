@@ -37,7 +37,7 @@ First of all, we installed a [self-hosted runner](https://docs.github.com/en/act
 
 Next, everyone (!!) created a build pipeline to play and get a feeling. Our first pipeline was just a "Hello, world". Nothing fancy. It is important to run all the build tools inside docker, we don't want to install anything on the server. The pipeline can just be created on GitHub. It is the easier way, because it has builtin documentation, syntax highlighting, auto completion and even a marketplace for common workflows. However, it is also possible to create our own workflows in a yaml file in the `.github/workflows/` on our local machine.
 
-![](./screenshots/screenshot1.png)
+![](./docs/screenshots/screenshot1.png)
 
 The [GitHub Actions](https://github.com/kllmanu/devops/actions) shows all the pipelines. It allows us to investigate issues if we need to.
 
@@ -55,7 +55,7 @@ This lecture was all about getting to know plain `docker` commands, no `docker c
 
 We built the application with the [official gradle image ](https://hub.docker.com/_/gradle) and run it with the [eclipse temurin](https://hub.docker.com/_/eclipse-temurin) image.
 
-![](./screenshots/screenshot2.png)
+![](./docs/screenshots/screenshot2.png)
 
 **Some challenges we encountered here**:
 
@@ -68,6 +68,6 @@ We built the application with the [official gradle image ](https://hub.docker.co
 - The integration test just `curl`'s the response and `grep`'s for "running".
 - We name our images with `latest` for the most recent one but also tag them with the commit SHA.
 
-![](./screenshots/screenshot3.png)
+![](./docs/screenshots/screenshot3.png)
 
 In order to verify our repository and pushed images we have installed [crane](https://github.com/google/go-containerregistry/blob/main/cmd/crane/doc/crane.md).
