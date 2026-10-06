@@ -27,11 +27,11 @@ jobs:
         run: docker build -f Dockerfile.nathan -t demo-nathan .
 
       - name: Stop old docker container
-        run: docker stop demo-nathan
+        run: docker stop demo-nathan || true
         continue-on-error: true
 
       - name: Remove old container
-        run: docker rm demo-nathan
+        run: docker rm demo-nathan || true
         continue-on-error: true
 
       - name: Run docker container
