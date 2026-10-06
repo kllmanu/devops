@@ -43,13 +43,13 @@ The [GitHub Actions](https://github.com/kllmanu/devops/actions) shows all the pi
 
 This lecture was all about getting to know plain `docker` commands, no `docker compose` so far. We want to get there, step by step, not all at once.
 
-- [x] checkout repository
-- [x] build with gradle image
-- [x] run unit tests (part of the build step)
-- [x] build a docker image
-- [x] stop old container
-- [x] remove old container
-- [x] start new container
+- checkout repository
+- build with gradle image
+- run unit tests (part of the build step)
+- build a docker image
+- stop old container
+- remove old container
+- start new container
 
 We built the application with the [official gradle image ](https://hub.docker.com/_/gradle) and run it with the [eclipse temurin](https://hub.docker.com/_/eclipse-temurin) image.
 
