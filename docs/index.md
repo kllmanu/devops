@@ -71,36 +71,3 @@ We built the application with the [official gradle image ](https://hub.docker.co
 ![](screenshots/screenshot3.png)
 
 In order to verify our repository and pushed images we have installed [crane](https://github.com/google/go-containerregistry/blob/main/cmd/crane/doc/crane.md).
-
-### Dynamic Documentation
-
-```mermaid
-flowchart TD
-    Trigger(["Trigger: Push Tag (v*.*.*)"]) --> Jobs
-
-    subgraph Jobs ["Pipeline: Documentation"]
-        
-        subgraph PandocJob ["Job: pandoc (self-hosted)"]
-            direction TB
-            P1["1. Checkout repository<br><code>actions/checkout@v4</code>"]
-            P2["2. Run Pandoc via Docker<br><code>pandoc/extra</code>"]
-            P3["3. Create GitHub Release<br><code>softprops/action-gh-release@v2</code>"]
-            
-            P1 --> P2 --> P3
-        end
-
-        subgraph MkdocsJob ["Job: mkdocs (self-hosted)"]
-            direction TB
-            M1["1. Checkout repository<br><code>actions/checkout@v4</code>"]
-            M2["2. Run MkDocs Build via Docker<br><code>squidfunk/mkdocs-material</code>"]
-            M3["3. Upload Artifact<br><code>actions/upload-pages-artifact@v3</code>"]
-            M4["4. Deploy to GitHub Pages<br><code>actions/deploy-pages@v4</code>"]
-            
-            M1 --> M2 --> M3 --> M4
-        end
-
-    end
-
-    P3 --> PDF[("Artifact: doc-v*.*.*.pdf (Release)")]
-    M4 --> Site[("Deployed: GitHub Pages")]
-```
