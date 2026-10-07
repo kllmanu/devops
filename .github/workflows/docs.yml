@@ -38,9 +38,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Prepare step
-        run: mkdir docs/ && cp README.md docs/index.md
-
       - name: Run MkDocs Build via Docker
         run: |
           docker run --rm --volume "${{ github.workspace }}:/docs" --user $(id -u):$(id -g) \

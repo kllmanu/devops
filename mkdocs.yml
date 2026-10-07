@@ -2,6 +2,9 @@ site_name: "DevOps 26"
 repo_url: https://github.com/kllmanu/devops
 nav:
   - Lecture notes: index.md
+markdown_extensions:
+  - toc:
+      toc_depth: 3
 theme:
   language: en
   name: material
