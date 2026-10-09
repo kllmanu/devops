@@ -8,9 +8,9 @@ This is our repository for the [DevOps course at FHV](https://www.fhv.at/en/cour
 
 We are using multiple pipelines, so everyone is able to play around with, thus we have multiple applications on the server running:
 
-- http://10.0.40.170:8081 (Manuel's pipeline)
-- http://10.0.40.170:8082 (Nathan's pipeline)
-- http://10.0.40.170:8083 (Ruben's pipeline)
+- [http://10.0.40.170:8081](http://10.0.40.170:8081) (Manuel's pipeline)
+- [http://10.0.40.170:8082](http://10.0.40.170:8082) (Nathan's pipeline)
+- [http://10.0.40.170:8083](http://10.0.40.170:8083) (Ruben's pipeline)
 
 ## Documentation
 

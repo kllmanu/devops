@@ -10,8 +10,8 @@ Applied Sciences Vorarlberg. DevOps is the integration and automation of
 **software development and operations**. The aim of the course is to convey the
 interlinking between both.
 
-- http://10.0.40.170:8081 (Manuel's pipeline)
-- http://10.0.40.170:8082 (Nathan's pipeline)
-- http://10.0.40.170:8083 (Ruben's pipeline)
+- [http://10.0.40.170:8081](http://10.0.40.170:8081) (Manuel's pipeline)
+- [http://10.0.40.170:8082](http://10.0.40.170:8082) (Nathan's pipeline)
+- [http://10.0.40.170:8083](http://10.0.40.170:8083) (Ruben's pipeline)
 
 We are using multiple pipelines, so everyone is able to play and mess up with, which means we have multiple applications on the server running at the same time.
