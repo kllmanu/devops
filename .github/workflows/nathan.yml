@@ -13,11 +13,24 @@ jobs:
       # Make the repository available to the build job.
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # fetches the full git history for sonar qube
 
       # Mount the checked-out repository into the Gradle container, use it as
       # the working directory, and run the build (including the unit tests).
       - name: Build with Gradle
         run: docker run --rm -u "$(id -u):$(id -g)" -v "$PWD:/app" -w /app gradle:jdk21 gradle build
+
+      - name: SonarQube scan
+        env:
+          SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          docker run --rm -u "$(id -u):$(id -g)" \
+            -e SONAR_HOST_URL="$SONAR_HOST_URL" \
+            -e SONAR_TOKEN="$SONAR_TOKEN" \
+            -v "$PWD:/usr/src" \
+            sonarsource/sonar-scanner-cli
 
       - name: Check path
         run: |
