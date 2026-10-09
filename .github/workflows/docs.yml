@@ -18,7 +18,7 @@ jobs:
       - name: Run pandoc
         run: |
           docker run --rm --volume "${{ github.workspace }}:/data" --user $(id -u):$(id -g) \
-            pandoc/extra metadata.yml README.md \
+            pandoc/extra metadata.yml docs/index.md \
             --resource-path=.:docs:docs/screenshots \
             -M subtitle="Documentation ${{ github.ref_name }}" \
             -M header-right="${{ github.ref_name }}" \
