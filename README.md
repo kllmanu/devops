@@ -14,5 +14,4 @@ interlinking between both.
 - http://10.0.40.170:8082 (Nathan's pipeline)
 - http://10.0.40.170:8083 (Ruben's pipeline)
 
-We are using multiple pipelines, so everyone is able to play and mess up, which
-means we have multiple applications on the server running.
+We are using multiple pipelines, so everyone is able to play and mess up with, which means we have multiple applications on the server running at the same time.

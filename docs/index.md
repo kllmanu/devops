@@ -67,3 +67,32 @@ We built the application with the [official gradle image ](https://hub.docker.co
 ![](screenshots/screenshot3.png)
 
 In order to verify our repository and pushed images we have installed [crane](https://github.com/google/go-containerregistry/blob/main/cmd/crane/doc/crane.md).
+
+### Code Analysis
+
+The code analysis of SonarQube requires us to use JaCoCo for test coverage.
+
+The JaCoCo report task is running automatically with this config, every time
+we run `./gradlew test` which is already the case whenever we build the application.
+
+```
+tasks.withType(Test).configureEach {
+    useJUnitPlatform()
+    finalizedBy(tasks.jacocoTestReport)
+}
+
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
+    reports {
+        xml.required = true
+    }
+}
+```
+
+SonarQube requires to [setup and configure a project](https://docs.sonarsource.com/sonarqube-server/analyzing-source-code/scanners/sonarscanner#configuring-your-project) first.
+
+The docker command uses variables and secrets from GitHub. They have to be defined in the settings of the repository.
+
+![](screenshots/screenshot4.png)
+
+Once the first scan has finished, it will appear in the SonarQube admin.
