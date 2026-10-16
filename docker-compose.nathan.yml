@@ -1,0 +1,20 @@
+services:
+  demo:
+    build:
+      context: .
+        dockerfile: Dockerfile.nathan
+      image: demo-nathan:latest
+      container_name: demo-nathan
+      ports:
+        - “8082:8082”
+      restart: unless-stopped
+
+    docs:
+      build:
+        context: .
+          dockerfile: Dockerfile.nathan-docs
+        image: team23-docs:0.0.1
+        container_name: nathan-docs
+        ports:
+          - “8084:80”
+        restart: unless-stopped
