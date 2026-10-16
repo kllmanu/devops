@@ -15,14 +15,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Run pandoc
+      - name: Generate PDF documentation
         run: |
-          docker run --rm --volume "${{ github.workspace }}:/data" --user $(id -u):$(id -g) \
-            pandoc/extra metadata.yml docs/index.md \
+          docker run --rm \
+            --volume "${{ github.workspace }}:/data" \
+            --user "$(id -u):$(id -g)" \
+            pandoc/extra \
+            metadata.yml docs/index.md \
             --resource-path=.:docs:docs/screenshots \
             -M subtitle="Documentation ${{ github.ref_name }}" \
             -M header-right="${{ github.ref_name }}" \
-            --template eisvogel -o doc-${{ github.ref_name }}.pdf
+            --template eisvogel \
+            -o doc-${{ github.ref_name }}.pdf
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
@@ -32,22 +36,55 @@ jobs:
   mkdocs:
     runs-on: self-hosted
     permissions:
-      contents: write
+      contents: read
       pages: write
       id-token: write
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Run MkDocs Build via Docker
+      - name: Build MkDocs website
         run: |
-          docker run --rm --volume "${{ github.workspace }}:/docs" --user $(id -u):$(id -g) \
+          docker run --rm \
+            --volume "${{ github.workspace }}:/docs" \
+            --user "$(id -u):$(id -g)" \
             squidfunk/mkdocs-material build
 
-      - name: Upload artifact
+      - name: Build Team 8 documentation image
+        run: |
+          docker build \
+            -f Dockerfile.nathan-docs \
+            -t team8-docs:0.0.1 .
+
+      - name: Tag documentation image
+        run: |
+          docker tag team8-docs:0.0.1 \
+            10.0.40.171:5000/team8/team8-docs:0.0.1
+
+          docker tag team8-docs:0.0.1 \
+            10.0.40.171:5000/team8/team8-docs:latest
+
+      - name: Push documentation image
+        run: |
+          docker push 10.0.40.171:5000/team8/team8-docs:0.0.1
+          docker push 10.0.40.171:5000/team8/team8-docs:latest
+
+      - name: Remove old documentation container
+        run: docker rm -f nathan-docs || true
+
+      - name: Deploy documentation website
+        run: |
+          docker run -d \
+            --name nathan-docs \
+            -p 8084:80 \
+            --restart unless-stopped \
+            team8-docs:0.0.1
+
+      - name: Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: site/
-      
+
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
