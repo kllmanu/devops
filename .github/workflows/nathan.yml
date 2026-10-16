@@ -1,26 +1,23 @@
 name: Nathan's pipeline
 
-# Run the build for every pushed branch.
 on:
   push:
 
 jobs:
   build:
-    # This runner must have Docker installed and available to the workflow.
     runs-on: self-hosted
 
     steps:
-      # Make the repository available to the build job.
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # fetches the full git history for sonar qube
+          fetch-depth: 0
 
-      # Mount the checked-out repository into the Gradle container, use it as
-      # the working directory, and run the build (including the unit tests).
+      # Build Java application and run tests
       - name: Build with Gradle
         run: docker run --rm -u "$(id -u):$(id -g)" -v "$PWD:/app" -w /app gradle:jdk21 gradle build
 
+      # SonarQube analysis
       - name: SonarQube scan
         env:
           SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
@@ -33,19 +30,17 @@ jobs:
             sonarsource/sonar-scanner-cli
 
       - name: Check path
-        run: |
-          ls -alh build/libs
+        run: ls -alh build/libs
 
+      # Build Java image
       - name: Build docker image
-        run: docker build -f Dockerfile.nathan -t demo-nathan .
+        run: docker build -f Dockerfile.nathan -t demo-nathan:latest .
 
       - name: Stop old docker container
         run: docker stop demo-nathan || true
-        continue-on-error: true
 
       - name: Remove old container
         run: docker rm demo-nathan || true
-        continue-on-error: true
 
       - name: Run docker container
         run: docker run -d --name demo-nathan -p 8082:8080 --restart unless-stopped demo-nathan:latest
@@ -54,8 +49,34 @@ jobs:
         run: sleep 30
 
       - name: Run integration test
-        run: curl -s http://localhost:8082 | grep "running"
+        run: curl -fsS http://localhost:8082 | grep "running"
 
+      # Generate MkDocs HTML
+      - name: Build MkDocs documentation
+        run: |
+          docker run --rm \
+            --user "$(id -u):$(id -g)" \
+            -v "$PWD:/docs" \
+            squidfunk/mkdocs-material build
+
+      # Build Nginx documentation image
+      - name: Build documentation Docker image
+        run: docker build -f Dockerfile.nathan-docs -t team23-docs:0.0.1 .
+
+      # Replace old documentation container
+      - name: Remove old documentation container
+        run: docker rm -f nathan-docs || true
+
+      # Deploy documentation
+      - name: Run documentation container
+        run: |
+          docker run -d \
+            --name nathan-docs \
+            -p 8084:80 \
+            --restart unless-stopped \
+            team23-docs:0.0.1
+
+      # Push Java image
       - name: Tag docker image
         run: |
           docker tag demo-nathan:latest 10.0.40.171:5000/team8/demo-nathan:${{ github.sha }}
@@ -66,6 +87,18 @@ jobs:
           docker push 10.0.40.171:5000/team8/demo-nathan:${{ github.sha }}
           docker push 10.0.40.171:5000/team8/demo-nathan:latest
 
+      # Push documentation image
+      - name: Tag documentation image
+        run: |
+          docker tag team23-docs:0.0.1 10.0.40.171:5000/team8/team23-docs:0.0.1
+          docker tag team23-docs:0.0.1 10.0.40.171:5000/team8/team23-docs:latest
+
+      - name: Push documentation image
+        run: |
+          docker push 10.0.40.171:5000/team8/team23-docs:0.0.1
+          docker push 10.0.40.171:5000/team8/team23-docs:latest
+
+      # Clean up unused images
       - name: Clean up unused Docker images
         if: always()
         run: docker image prune -f
