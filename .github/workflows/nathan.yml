@@ -1,105 +1,66 @@
 name: Nathan's pipeline
-
 on:
   push:
-
 jobs:
   build:
     runs-on: self-hosted
-
     steps:
-  
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      # Build Java application and run tests
       - name: Build with Gradle
-        run: docker run --rm -u "$(id -u):$(id -g)" -v "$PWD:/app" -w /app gradle:jdk21 gradle build
-
-      # SonarQube analysis
+        run: |
+          docker run --rm \
+            --user "$(id -u):$(id -g)" \
+            -v "$PWD:/app" \
+            -w /app \
+            gradle:jdk21 \
+            gradle build
       - name: SonarQube scan
         env:
           SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          docker run --rm -u "$(id -u):$(id -g)" \
+          docker run --rm \
+            --user "$(id -u):$(id -g)" \
             -e SONAR_HOST_URL="$SONAR_HOST_URL" \
             -e SONAR_TOKEN="$SONAR_TOKEN" \
             -v "$PWD:/usr/src" \
             sonarsource/sonar-scanner-cli
-
-      - name: Check path
+      - name: Check build output
         run: ls -alh build/libs
-
-      # Build Java image
-      - name: Build docker image
-        run: docker build -f Dockerfile.nathan -t demo-nathan:latest .
-
-      - name: Stop old docker container
-        run: docker stop demo-nathan || true
-
-      - name: Remove old container
-        run: docker rm demo-nathan || true
-
-      - name: Run docker container
-        run: docker run -d --name demo-nathan -p 8082:8080 --restart unless-stopped demo-nathan:latest
-
-      - name: Wait for container to be ready
-        run: sleep 30
-
-      - name: Run integration test
-        run: curl -fsS http://localhost:8082 | grep "running"
-
-      # Generate MkDocs HTML
-      - name: Build MkDocs documentation
+      - name: Build Docker image
         run: |
-          docker run --rm \
-            --user "$(id -u):$(id -g)" \
-            -v "$PWD:/docs" \
-            squidfunk/mkdocs-material build
-
-      # Build Nginx documentation image
-      - name: Build documentation Docker image
-        run: docker build -f Dockerfile.nathan-docs -t team23-docs:0.0.1 .
-
-      # Replace old documentation container
-      - name: Remove old documentation container
-        run: docker rm -f nathan-docs || true
-
-      # Deploy documentation
-      - name: Run documentation container
+          docker build \
+            -f Dockerfile.nathan \
+            -t demo-nathan:latest .
+      - name: Tag Docker image
+        run: |
+          docker tag demo-nathan:latest \
+            10.0.40.171:5000/team8/demo-nathan:${{ github.sha }}
+          docker tag demo-nathan:latest \
+            10.0.40.171:5000/team8/demo-nathan:latest
+      - name: Push Docker image
+        run: |
+          docker push \
+            10.0.40.171:5000/team8/demo-nathan:${{ github.sha }}
+          docker push \
+            10.0.40.171:5000/team8/demo-nathan:latest
+      - name: Remove old container
+        run: docker rm -f demo-nathan || true
+      - name: Deploy application
         run: |
           docker run -d \
-            --name nathan-docs \
-            -p 8084:80 \
+            --name demo-nathan \
+            -p 8082:8080 \
             --restart unless-stopped \
-            team23-docs:0.0.1
-
-      # Push Java image
-      - name: Tag docker image
+            demo-nathan:latest
+      - name: Wait for application
+        run: sleep 30
+      - name: Integration test
         run: |
-          docker tag demo-nathan:latest 10.0.40.171:5000/team8/demo-nathan:${{ github.sha }}
-          docker tag demo-nathan:latest 10.0.40.171:5000/team8/demo-nathan:latest
-
-      - name: Push docker images to registry
-        run: |
-          docker push 10.0.40.171:5000/team8/demo-nathan:${{ github.sha }}
-          docker push 10.0.40.171:5000/team8/demo-nathan:latest
-
-      # Push documentation image
-      - name: Tag documentation image
-        run: |
-          docker tag team23-docs:0.0.1 10.0.40.171:5000/team8/team23-docs:0.0.1
-          docker tag team23-docs:0.0.1 10.0.40.171:5000/team8/team23-docs:latest
-
-      - name: Push documentation image
-        run: |
-          docker push 10.0.40.171:5000/team8/team23-docs:0.0.1
-          docker push 10.0.40.171:5000/team8/team23-docs:latest
-
-      # Clean up unused images
+          curl --fail --silent http://localhost:8082 | grep "running"
       - name: Clean up unused Docker images
         if: always()
         run: docker image prune -f
