@@ -11,7 +11,24 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
+
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: doc-${{ github.ref_name }}.pdf
+
+  mkdocs:
+    runs-on: self-hosted
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
 
       - name: Generate PDF documentation
         run: |
@@ -26,42 +43,13 @@ jobs:
             --template eisvogel \
             -o doc-${{ github.ref_name }}.pdf
 
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          files: doc-${{ github.ref_name }}.pdf
-
-  mkdocs:
-    runs-on: self-hosted
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
       - name: Build MkDocs website
         run: |
           docker run --rm \
             --volume "${{ github.workspace }}:/docs" \
             --user "$(id -u):$(id -g)" \
             squidfunk/mkdocs-material build
-      
-      - name: Generate PDF documentation for Nginx
-        run: |
-          docker run --rm \
-            --volume "${{ github.workspace }}:/data" \
-            --user "$(id -u):$(id -g)" \
-            --workdir /data \
-            pandoc/extra \
-            metadata.yml docs/index.md \
-            --resource-path=.:docs:docs/screenshots \
-            -M subtitle="Documentation ${{ github.ref_name }}" \
-            -M header-right="${{ github.ref_name }}" \
-            --template eisvogel \
-            -o site/doc.pdf
+            cp "doc-${GITHUB_REF_NAME}.pdf" site/documentation.pdf
 
       - name: Build Team 8 documentation image
         run: |
