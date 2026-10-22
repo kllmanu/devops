@@ -1,0 +1,144 @@
+name: Build and deploy application and documentation
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: self-hosted
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Generate PDF documentation
+        run: |
+          mkdir -p site src/main/resources/static
+
+          docker run --rm \
+            --volume "${{ github.workspace }}:/data" \
+            --user "$(id -u):$(id -g)" \
+            --workdir /data \
+            pandoc/extra \
+            metadata.yml docs/index.md \
+            --resource-path=.:docs:docs/screenshots \
+            -M subtitle="Documentation ${{ github.ref_name }}" \
+            -M header-right="${{ github.ref_name }}" \
+            --template eisvogel \
+            -o doc.pdf
+          mkdir src/main/resources/static
+          cp doc.pdf src/main/resources/static/doc.pdf
+
+      - name: Build MkDocs website
+        run: |
+          docker run --rm \
+            --volume "${{ github.workspace }}:/docs" \
+            --user "$(id -u):$(id -g)" \
+            squidfunk/mkdocs-material build
+
+            cp doc.pdf site/doc.pdf
+
+      - name: Build documentation image
+        run: |
+          docker build \
+            -f Dockerfile.nathan-docs \
+            -t team8-docs:0.0.1 .
+
+      - name: Tag documentation image
+        run: |
+          docker tag team8-docs:0.0.1 \
+            10.0.40.171:5000/team8/team8-docs:0.0.1
+          docker tag team8-docs:0.0.1 \
+            10.0.40.171:5000/team8/team8-docs:latest
+
+      - name: Push documentation image
+        run: |
+          docker push 10.0.40.171:5000/team8/team8-docs:0.0.1
+          docker push 10.0.40.171:5000/team8/team8-docs:latest
+
+      - name: Remove old documentation container
+        run: docker rm -f nathan-docs || true
+
+      - name: Deploy documentation website
+        run: |
+          docker run -d \
+            --name nathan-docs \
+            -p 8084:80 \
+            --restart unless-stopped \
+            team8-docs:0.0.1
+
+      - name: Build application with Gradle
+        run: |
+          docker run --rm \
+            --user "$(id -u):$(id -g)" \
+            --volume "${{ github.workspace }}:/app" \
+            --workdir /app \
+            gradle:jdk21 \
+            gradle build
+
+      - name: SonarQube scan
+        env:
+          SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          docker run --rm \
+            --user "$(id -u):$(id -g)" \
+            --env SONAR_HOST_URL="$SONAR_HOST_URL" \
+            --env SONAR_TOKEN="$SONAR_TOKEN" \
+            --volume "${{ github.workspace }}:/usr/src" \
+            sonarsource/sonar-scanner-cli
+
+      - name: Check build output
+        run: ls -alh build/libs
+
+      - name: Build application image
+        run: |
+          docker build \
+            -f Dockerfile.nathan \
+            -t demo-nathan:latest .
+
+      - name: Tag application image
+        run: |
+          docker tag demo-nathan:latest \
+            10.0.40.171:5000/team8/demo-nathan:${{ github.sha }}
+          docker tag demo-nathan:latest \
+            10.0.40.171:5000/team8/demo-nathan:latest
+
+      - name: Push application image
+        run: |
+          docker push \
+            10.0.40.171:5000/team8/demo-nathan:${{ github.sha }}
+          docker push \
+            10.0.40.171:5000/team8/demo-nathan:latest
+
+      - name: Remove old application container
+        run: docker rm -f demo-nathan || true
+
+      - name: Deploy application
+        run: |
+          docker run -d \
+            --name demo-nathan \
+            -p 8082:8080 \
+            --restart unless-stopped \
+            demo-nathan:latest
+
+      - name: Wait for application
+        run: sleep 30
+
+      - name: Integration test
+        run: |
+          curl --fail --silent http://localhost:8082 | grep "running"
+          curl --fail --silent --output /dev/null \
+            --header "Accept: application/pdf" \
+            http://localhost:8082/doc.pdf
+          curl --fail --silent --output /dev/null \
+            http://localhost:8084/doc.pdf
+
+      - name: Clean up unused Docker images
+        if: always()
+        run: docker image prune -f
