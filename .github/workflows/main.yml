@@ -31,7 +31,7 @@ jobs:
             -M header-right="${{ github.ref_name }}" \
             --template eisvogel \
             -o doc.pdf
-          mkdir src/main/resources/static
+          # mkdir src/main/resources/static
           cp doc.pdf src/main/resources/static/doc.pdf
 
       - name: Build MkDocs website
