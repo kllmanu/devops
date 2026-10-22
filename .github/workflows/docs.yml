@@ -50,6 +50,20 @@ jobs:
             --volume "${{ github.workspace }}:/docs" \
             --user "$(id -u):$(id -g)" \
             squidfunk/mkdocs-material build
+      
+      - name: Generate PDF documentation for Nginx
+        run: |
+          docker run --rm \
+            --volume "${{ github.workspace }}:/data" \
+            --user "$(id -u):$(id -g)" \
+            --workdir /data \
+            pandoc/extra \
+            metadata.yml docs/index.md \
+            --resource-path=.:docs:docs/screenshots \
+            -M subtitle="Documentation ${{ github.ref_name }}" \
+            -M header-right="${{ github.ref_name }}" \
+            --template eisvogel \
+            -o site/doc.pdf
 
       - name: Build Team 8 documentation image
         run: |
