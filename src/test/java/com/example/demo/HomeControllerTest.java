@@ -15,7 +15,7 @@ class HomeControllerTest {
         Map<String, String> response = controller.index();
 
         assertNotNull(response);
-        assertEquals("Hello, DevOps!", response.get("message"));
+        assertEquals("Hello, Team 8!", response.get("message"));
         assertEquals("running", response.get("status"));
     }
 }
