@@ -11,7 +11,7 @@ public class HomeController {
     @GetMapping("/")
     public Map<String, String> index() {
         return Map.of(
-            "message", "Hello, DevOps!",
+            "message", "Hello, Team 8!",
             "status", "running"
         );
     }
