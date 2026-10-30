@@ -142,3 +142,45 @@ jobs:
       - name: Clean up unused Docker images
         if: always()
         run: docker image prune -f
+
+      - name: Deploy to Production Server via SSH
+        env:
+          SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          PROD_HOST: ${{ vars.PROD_HOST }}   # Replace with your server IP/hostname if not using a variable
+          PROD_USER: ${{ vars.PROD_USER }}   # e.g., ubuntu or root
+        run: |
+          # 1. Save the SSH key to a temporary file with restricted permissions
+          mkdir -p ~/.ssh
+          echo "$SSH_KEY" > ~/.ssh/production_key
+          chmod 600 ~/.ssh/production_key
+
+          # 2. Connect to the production server and manage containers/images
+          ssh -i ~/.ssh/production_key -o StrictHostKeyChecking=no "$PROD_USER@$PROD_HOST" << 'EOF'
+            # Stop and remove existing containers (Lifecycle)
+            docker rm -f nathan-docs demo-nathan || true
+
+            # Remove old local images to free up space (optional but recommended)
+            docker rmi -f team8-docs:0.0.1 demo-nathan:latest || true
+            docker rmi -f 10.0.40.171:5000/team8/team8-docs:latest 10.0.40.171:5000/team8/demo-nathan:latest || true
+
+            # Pull latest images from your private registry (or run them directly)
+            docker pull 10.0.40.171:5000/team8/team8-docs:latest
+            docker pull 10.0.40.171:5000/team8/demo-nathan:latest
+
+            # Start documentation container
+            docker run -d \
+              --name nathan-docs \
+              -p 1882:80 \
+              --restart unless-stopped \
+              10.0.40.171:5000/team8/team8-docs:latest
+
+            # Start application container
+            docker run -d \
+              --name demo-nathan \
+              -p 1881:8080 \
+              --restart unless-stopped \
+              10.0.40.171:5000/team8/demo-nathan:latest
+          EOF
+
+          # 3. Clean up the private key from the runner
+          rm -f ~/.ssh/production_key
